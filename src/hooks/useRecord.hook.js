@@ -1,13 +1,38 @@
 import { useRef, useState } from "react";
-import { apiAddress } from "./utils/constants";
+import { apiAddress } from "../utils/constants";
+import { useEffect } from "react";
 
-import { AppStyled, AudioButton, Main, Mic } from "./App.styles";
-import MicIcon from "./assets/mic.svg";
+export const useRecord = () => {
+    // Get voices when they are loaded
+    const [voices, setVoices] = useState([]);
+    useEffect(() => {
+        const loadVoices = () => {
+            const voices = speechSynthesis.getVoices();
+            setVoices(voices);
+        };
 
-function App() {
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+    }, []);
+
+    const [userQuery, setUserQuery] = useState("");
+    const [gptResponse, setGptResponse] = useState("");
     const [isRecording, setIsRecording] = useState(false);
-    const mediaRecorder = useRef(null);
 
+    // Browser text to voice
+    const talk = (text) => {
+        const message = new SpeechSynthesisUtterance();
+        message.text = text;
+        message.voice = voices.filter((voice) =>
+            voice.lang.startsWith("en")
+        )[0];
+        message.rate = 1;
+        message.pitch = 1;
+        speechSynthesis.speak(message);
+    };
+
+    // Communicating with the API
     const sendAudio = async (audioBlob) => {
         const formData = new FormData();
         formData.append("audio", audioBlob, "audio.wav");
@@ -17,8 +42,14 @@ function App() {
             body: formData,
         });
         res = await res.json();
-        res = res.response;
+
+        setUserQuery(res.request);
+        setGptResponse(res.response);
+        talk(res.response);
     };
+
+    // Recording
+    const mediaRecorder = useRef(null);
 
     const setupRecording = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -51,24 +82,11 @@ function App() {
         mediaRecorder.current.stop();
     };
 
-    return (
-        <AppStyled>
-            <Main>
-                {isRecording ? (
-                    <>
-                        <h2>rec</h2>
-                        <AudioButton onClick={stopRecording}>
-                            <Mic src={MicIcon} />
-                        </AudioButton>
-                    </>
-                ) : (
-                    <AudioButton onClick={startRecording}>
-                        <Mic src={MicIcon} />
-                    </AudioButton>
-                )}
-            </Main>
-        </AppStyled>
-    );
-}
-
-export default App;
+    return {
+        isRecording,
+        startRecording,
+        stopRecording,
+        userQuery,
+        gptResponse,
+    };
+};

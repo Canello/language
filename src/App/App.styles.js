@@ -5,32 +5,28 @@ export const AppStyled = styled.div`
     flex-direction: column;
     align-items: center;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     background-color: #f9f4e9;
 `;
 
 export const Main = styled.main`
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
     max-width: 720px;
     padding: 40px;
 `;
 
-export const AudioButton = styled.button`
-    width: 72px;
-    height: 72px;
-    border: none;
-    border-radius: 100%;
-    background-color: #f98c74;
-
-    &:hover {
-        cursor: pointer;
-    }
+export const H1 = styled.h1`
+    color: #002b5b;
+    font-size: 24px;
+    font-weight: black;
 `;
 
-export const Mic = styled.img`
-    width: 32px;
-    height: 32px;
+export const H4 = styled.h4`
+    color: #99968f;
+    font-size: 14px;
+    font-weight: 400;
 `;
