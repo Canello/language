@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
-import { apiAddress } from "../utils/constants";
+import { apiAddress } from "../../utils/constants";
 import { useEffect } from "react";
+import { speak } from "./functions/speak";
 
 export const useRecord = () => {
     // Get voices when they are loaded
@@ -20,18 +21,6 @@ export const useRecord = () => {
     const [gptResponse, setGptResponse] = useState("");
     const [isRecording, setIsRecording] = useState(false);
 
-    // Browser text to voice
-    const talk = (text) => {
-        const message = new SpeechSynthesisUtterance();
-        message.text = text;
-        message.voice = voices.filter((voice) =>
-            voice.lang.startsWith("en")
-        )[0];
-        message.rate = 1;
-        message.pitch = 1;
-        speechSynthesis.speak(message);
-    };
-
     // Communicating with the API
     const sendAudio = async (audioBlob) => {
         const formData = new FormData();
@@ -45,7 +34,7 @@ export const useRecord = () => {
 
         setUserQuery(res.request);
         setGptResponse(res.response);
-        talk(res.response);
+        speak(res.response, voices);
     };
 
     // Recording
@@ -64,7 +53,6 @@ export const useRecord = () => {
         });
 
         mediaRecorder.current.addEventListener("stop", async () => {
-            // Aparentemente audioChunks é uma referência fixa aqui, e, mesmo quando eu reseto, aqui continua referenciando o antigo
             const audioBlob = new Blob(audioChunks);
             await sendAudio(audioBlob);
             audioChunks = [];

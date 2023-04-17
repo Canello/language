@@ -2,7 +2,7 @@ import { AppStyled, H1, H4, Main } from "./App.styles";
 import { Spacer } from "../components/Spacer/Spacer.component";
 import { AudioButton } from "./subcomponents/AudioButton.component";
 import { ChatBox } from "./subcomponents/ChatBox.component";
-import { useRecord } from "../hooks/useRecord.hook";
+import { useRecord } from "../hooks/useRecord/useRecord.hook";
 
 function App() {
     const {

@@ -9,6 +9,7 @@ export const ChatBoxStyled = styled.div`
 `;
 
 export const Text = styled.p`
+    white-space: pre-wrap;
     color: #002b5b;
     font-size: 16px;
     font-weight: 400;
