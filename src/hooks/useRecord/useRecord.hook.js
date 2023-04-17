@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useVoices } from "./subhooks/useVoices.hook";
-import { useRecordingFunctions } from "./subhooks/useRecordingFunctions";
+import { useRecordingFunctions } from "./subhooks/useRecordingFunctions.hook";
 
 export const useRecord = () => {
     const [userQuery, setUserQuery] = useState("");
