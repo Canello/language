@@ -2,16 +2,17 @@ import { AppStyled, H1, Main, TopContainer } from "./App.styles";
 import { Spacer } from "../components/Spacer/Spacer.component";
 import { AudioButton } from "./subcomponents/AudioButton.component";
 import { ChatBox } from "./subcomponents/ChatBox.component";
-import { useRecord } from "../hooks/useRecord/useRecord.hook";
+import { useConversation } from "../hooks/useConversation/useConversation.hook";
 
 function App() {
     const {
-        isRecording,
         startRecording,
         stopRecording,
-        userQuery,
-        gptResponse,
-    } = useRecord();
+        isRecording,
+        query,
+        response,
+        isSpeaking,
+    } = useConversation();
 
     return (
         <AppStyled>
@@ -25,9 +26,11 @@ function App() {
                     />
                 </TopContainer>
                 <Spacer y={20} />
-                <ChatBox label="Você">{userQuery}</ChatBox>
+                <ChatBox label="Você">{query}</ChatBox>
                 <Spacer y={20} />
-                <ChatBox label="Caitlyn">{gptResponse}</ChatBox>
+                <ChatBox label="Caitlyn" isActive={isSpeaking}>
+                    {response}
+                </ChatBox>
             </Main>
         </AppStyled>
     );

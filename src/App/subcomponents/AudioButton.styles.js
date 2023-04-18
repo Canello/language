@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const AudioButtonStyled = styled.button`
+    position: relative;
+    flex-shrink: 0;
     display: flex;
     justify-content: center;
     align-items: center;

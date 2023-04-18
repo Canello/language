@@ -1,28 +1,42 @@
-import { useState } from "react";
-import { useVoices } from "./subhooks/useVoices.hook";
-import { useRecordingFunctions } from "./subhooks/useRecordingFunctions.hook";
+import { useRef, useState } from "react";
 
+// Main
 export const useRecord = () => {
-    const [userQuery, setUserQuery] = useState("");
-    const [gptResponse, setGptResponse] = useState("");
     const [isRecording, setIsRecording] = useState(false);
+    const [audioBlob, setAudioBlob] = useState(null);
+    const mediaRecorder = useRef(null);
 
-    // Get voices when they are loaded
-    const voices = useVoices();
+    if (!mediaRecorder.current) setupRecorder(mediaRecorder, setAudioBlob);
 
-    // Recording functions
-    const { startRecording, stopRecording } = useRecordingFunctions(
-        setUserQuery,
-        setGptResponse,
-        setIsRecording,
-        voices
-    );
-
-    return {
-        isRecording,
-        startRecording,
-        stopRecording,
-        userQuery,
-        gptResponse,
+    const startRecording = () => {
+        setIsRecording(true);
+        mediaRecorder.current.start();
     };
+
+    const stopRecording = () => {
+        setIsRecording(false);
+        mediaRecorder.current.stop();
+    };
+
+    return { startRecording, stopRecording, isRecording, audioBlob };
 };
+
+// Functions
+async function setupRecorder(mediaRecorder, setAudioBlob) {
+    let audioChunks = [];
+    const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+    });
+    mediaRecorder.current = new MediaRecorder(stream);
+
+    mediaRecorder.current.addEventListener("dataavailable", (event) => {
+        audioChunks.push(event.data);
+    });
+
+    mediaRecorder.current.addEventListener("stop", async () => {
+        const audioBlob = new Blob(audioChunks);
+        setAudioBlob(audioBlob);
+        audioChunks = [];
+    });
+}

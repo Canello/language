@@ -1,9 +1,13 @@
-export const speak = (text, voices) => {
+// Main
+export const speak = (text, voice, onSpeakEnd) => {
     const chunks = getChunks(text);
-    const englishVoice = getEnglishVoice(voices);
-    chunks.forEach((chunk) => speakChunk(chunk, englishVoice));
+    chunks.forEach((chunk, i) => {
+        const isLastChunk = i === chunks.length - 1;
+        speakChunk(chunk, voice, isLastChunk, onSpeakEnd);
+    });
 };
 
+// Functions
 function getChunks(text) {
     const chunks = [];
     let i = 0;
@@ -64,6 +68,12 @@ function getWords(text, currentIndex, chunkMaxLength) {
     return { chunk, lastIndex };
 }
 
+function getSlice(text, currentIndex, chunkMaxLength) {
+    const maxIndex = currentIndex + chunkMaxLength - 1;
+    const chunk = text.slice(currentIndex, maxIndex + 1);
+    return { chunk, lastIndex: maxIndex };
+}
+
 function getChunkBySeparators(text, currentIndex, chunkMaxLength, separators) {
     let chunk = "";
     let firstCharIndex = currentIndex;
@@ -81,21 +91,16 @@ function getChunkBySeparators(text, currentIndex, chunkMaxLength, separators) {
     return { chunk, lastIndex: firstCharIndex };
 }
 
-function getSlice(text, currentIndex, chunkMaxLength) {
-    const maxIndex = currentIndex + chunkMaxLength - 1;
-    const chunk = text.slice(currentIndex, maxIndex + 1);
-    return { chunk, lastIndex: maxIndex };
+function speakChunk(chunk, voice, isLastChunk, onSpeakEnd) {
+    const synth = new SpeechSynthesisUtterance();
+    synth.text = chunk;
+    synth.voice = voice;
+    synth.rate = 1;
+    synth.pitch = 1;
+    if (isLastChunk) listenToSpeakEnd(synth, onSpeakEnd);
+    speechSynthesis.speak(synth);
 }
 
-function getEnglishVoice(voices) {
-    return voices.filter((voice) => voice.lang.startsWith("en"))[0];
-}
-
-function speakChunk(chunk, voice) {
-    const message = new SpeechSynthesisUtterance();
-    message.text = chunk;
-    message.voice = voice;
-    message.rate = 1;
-    message.pitch = 1;
-    speechSynthesis.speak(message);
+function listenToSpeakEnd(synth, onSpeakEnd) {
+    synth.addEventListener("end", onSpeakEnd);
 }
