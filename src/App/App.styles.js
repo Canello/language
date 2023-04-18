@@ -9,6 +9,13 @@ export const AppStyled = styled.div`
     background-color: #f9f4e9;
 `;
 
+export const TopContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`;
+
 export const Main = styled.main`
     position: relative;
     display: flex;
@@ -23,10 +30,4 @@ export const H1 = styled.h1`
     color: #002b5b;
     font-size: 24px;
     font-weight: black;
-`;
-
-export const H4 = styled.h4`
-    color: #99968f;
-    font-size: 14px;
-    font-weight: 400;
 `;
