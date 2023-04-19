@@ -1,10 +1,14 @@
 // Main
 export const speak = (text, voice, onSpeakEnd) => {
     const chunks = getChunks(text);
-    chunks.forEach((chunk, i) => {
+    const synths = [];
+    for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
         const isLastChunk = i === chunks.length - 1;
-        speakChunk(chunk, voice, isLastChunk, onSpeakEnd);
-    });
+        const synth = speakChunk(chunk, voice, isLastChunk, onSpeakEnd);
+        synths.push(synth);
+    }
+    return () => cancelSpeaking(synths, onSpeakEnd);
 };
 
 // Functions
@@ -99,8 +103,16 @@ function speakChunk(chunk, voice, isLastChunk, onSpeakEnd) {
     synth.pitch = 1;
     if (isLastChunk) listenToSpeakEnd(synth, onSpeakEnd);
     speechSynthesis.speak(synth);
+    return synth;
 }
 
 function listenToSpeakEnd(synth, onSpeakEnd) {
     synth.addEventListener("end", onSpeakEnd);
+}
+
+function cancelSpeaking(synths, onSpeakEnd) {
+    for (let synth of synths) {
+        synth.removeEventListener("end", onSpeakEnd);
+        speechSynthesis.cancel(synth);
+    }
 }

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 // Main
-export const useRecord = () => {
+export const useRecord = (stopSpeaking) => {
     const [isRecording, setIsRecording] = useState(false);
     const [audioBlob, setAudioBlob] = useState(null);
     const mediaRecorder = useRef(null);
@@ -9,6 +9,7 @@ export const useRecord = () => {
     if (!mediaRecorder.current) setupRecorder(mediaRecorder, setAudioBlob);
 
     const startRecording = () => {
+        if (stopSpeaking) stopSpeaking();
         setIsRecording(true);
         mediaRecorder.current.start();
     };

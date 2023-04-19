@@ -20,7 +20,7 @@ function App() {
         <AppStyled>
             <Main>
                 <TopContainer>
-                    <H1>Teste teste teste</H1>
+                    <H1>Talk to me!</H1>
                     <AudioButton
                         isRecording={isRecording}
                         startRecording={startRecording}

@@ -1,13 +1,13 @@
 import { apiAddress } from "../utils/constants";
 
-export const talkToGpt = async (query) => {
+export const talkToGpt = async (messages) => {
     let res = await fetch(apiAddress + "/chat", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            query,
+            messages,
         }),
     });
     res = await res.json();

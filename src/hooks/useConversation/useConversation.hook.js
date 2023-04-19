@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { transcribe } from "../../services/transcribe.service";
 import { useApi } from "../useApi/useApi.hook";
 import { useRecord } from "../useRecord/useRecord.hook";
@@ -6,9 +6,11 @@ import { talkToGpt } from "../../services/talkToGpt.service";
 import { useSpeak } from "../useSpeak/useSpeak.hook";
 
 export const useConversation = () => {
+    const messages = useRef([]);
+
+    const { speak, stopSpeaking, isSpeaking } = useSpeak();
     const { startRecording, stopRecording, isRecording, audioBlob } =
-        useRecord();
-    const { speak, isSpeaking } = useSpeak();
+        useRecord(stopSpeaking);
     const [
         fetchTranscription,
         transcription,
@@ -31,12 +33,14 @@ export const useConversation = () => {
     // Get gpt response everytime a new query is transcripted
     useEffect(() => {
         if (!transcription) return;
-        fetchGptResponse(transcription);
+        messages.current.push({ role: "user", content: transcription });
+        fetchGptResponse(messages.current);
     }, [transcription]);
 
     // Speak gpt response everytime a new gpt response is generated
     useEffect(() => {
         if (!gptResponse) return;
+        messages.current.push({ role: "assistant", content: gptResponse });
         speak(gptResponse);
     }, [gptResponse]);
 
