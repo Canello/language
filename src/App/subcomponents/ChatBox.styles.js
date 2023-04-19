@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Loading } from "../../components/Loading/Loading.component";
 
 const ICON_SIZE = "20px";
 
@@ -9,6 +10,11 @@ export const ChatBoxStyled = styled.div`
 export const LabelContainer = styled.div`
     display: flex;
     justify-content: space-between;
+`;
+
+export const LabelWrapper = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 export const IconsContainer = styled.div`
@@ -42,6 +48,7 @@ export const H4 = styled.h4`
 `;
 
 export const Box = styled.div`
+    display: flex;
     width: 100%;
     min-height: ${({ isMinimized }) => (isMinimized ? "0" : "120px")};
     height: ${({ isMinimized }) => (isMinimized ? "0" : "auto")};

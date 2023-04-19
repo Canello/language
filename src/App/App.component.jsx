@@ -10,7 +10,9 @@ function App() {
         stopRecording,
         isRecording,
         query,
+        isLoadingQuery,
         response,
+        isLoadingResponse,
         isSpeaking,
     } = useConversation();
 
@@ -26,9 +28,15 @@ function App() {
                     />
                 </TopContainer>
                 <Spacer y={20} />
-                <ChatBox label="Você">{query}</ChatBox>
+                <ChatBox label="Você" isLoading={isLoadingQuery}>
+                    {query}
+                </ChatBox>
                 <Spacer y={20} />
-                <ChatBox label="Caitlyn" isActive={isSpeaking}>
+                <ChatBox
+                    label="Caitlyn"
+                    isLoading={isLoadingResponse}
+                    isActive={isSpeaking}
+                >
                     {response}
                 </ChatBox>
             </Main>
