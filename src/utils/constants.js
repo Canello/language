@@ -1,2 +1,2 @@
 // export const apiAddress = "http://localhost:3001";
-export const apiAddress = "https://www.veewi.fun";
+export const apiAddress = "https://api.veewi.fun";
